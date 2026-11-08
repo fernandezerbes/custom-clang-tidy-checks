@@ -1,4 +1,5 @@
 
-target_sources(CustomClangTidyChecks PRIVATE 
-  StructuredBindingEqualAdjacentTypes.cpp
+target_sources(CustomClangTidyChecks PRIVATE
+  BugProneCustomModule.cpp 
+  NamedDestructuringCheck.cpp
 )
