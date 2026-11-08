@@ -1,4 +1,5 @@
 #include <clang-tidy/ClangTidyCheck.h>
+#include <llvm/ADT/StringRef.h>
 
 namespace clang::tidy::bugprone {
 
@@ -8,16 +9,20 @@ public:
 
   void registerMatchers(ast_matchers::MatchFinder *Finder) override;
   void check(const ast_matchers::MatchFinder::MatchResult &Result) override;
-  // void storeOptions(ClangTidyOptions::OptionMap &Options) override;
+  void storeOptions(ClangTidyOptions::OptionMap &Options) override;
   bool isLanguageVersionSupported(const LangOptions &LangOpts) const override;
 
 private:
-  enum class Mode {
+  enum class ComparisonMode {
     Undefined,
 
     Exact,
     Fuzzy,
   };
+
+  ComparisonMode getComparisonMode() const;
+
+  ComparisonMode Mode;
 };
 
 } // namespace clang::tidy::bugprone

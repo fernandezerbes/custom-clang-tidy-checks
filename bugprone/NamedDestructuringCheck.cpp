@@ -4,17 +4,15 @@
 #include <clang/AST/DeclCXX.h>
 #include <clang/AST/Type.h>
 #include <clang/ASTMatchers/ASTMatchers.h>
-#include <format>
 #include <llvm/ADT/StringRef.h>
+#include <llvm/Support/Error.h>
 #include <ranges>
 
 namespace clang::tidy::bugprone {
 
 NamedDestructuringCheck::NamedDestructuringCheck(StringRef CheckName,
                                                  ClangTidyContext *Context)
-    : ClangTidyCheck(CheckName, Context) {
-  // TODO: Handle options
-}
+    : ClangTidyCheck(CheckName, Context), Mode(getComparisonMode()) {}
 
 void NamedDestructuringCheck::registerMatchers(
     ast_matchers::MatchFinder *Finder) {
@@ -40,16 +38,19 @@ void NamedDestructuringCheck::check(
        std::ranges::zip_view(DecompDecl->bindings(), RecordDecl->fields())) {
     const auto BindingName = Binding->getNameAsString();
     const auto FieldName = Field->getNameAsString();
-    if (BindingName != FieldName) {
+
+    if (Mode == ComparisonMode::Exact && BindingName != FieldName) {
       diag(Binding->getLocation(),
-           std::format("Variable '{}' binds to a member of different name '{}'",
-                       BindingName, FieldName));
+           "Variable '%0' binds to a member of different name '%1'")
+          << BindingName << FieldName;
     }
   }
 }
 
-// void StructureBindingEqualAdjacentTypes::storeOptions(
-//     ClangTidyOptions::OptionMap &Options) {}
+void NamedDestructuringCheck::storeOptions(ClangTidyOptions::OptionMap &Opts) {
+  Options.store(Opts, "ComparisonMode",
+                Mode == ComparisonMode::Exact ? "Exact" : "Fuzzy");
+}
 
 bool NamedDestructuringCheck::isLanguageVersionSupported(
     const LangOptions &LangOpts) const {
@@ -57,6 +58,19 @@ bool NamedDestructuringCheck::isLanguageVersionSupported(
   // https://en.cppreference.com/cpp/language/structured_binding
   // return LangOpts.LangStd < LangStandard::Kind::lang_c17;
   return true;
+}
+
+NamedDestructuringCheck::ComparisonMode
+NamedDestructuringCheck::getComparisonMode() const {
+  const auto ModeStr = Options.get("ComparisonMode");
+  if (!ModeStr || *ModeStr == "Exact") {
+    return ComparisonMode::Exact;
+  }
+  if (*ModeStr == "Fuzzy") {
+    return ComparisonMode::Fuzzy;
+  }
+  configurationDiag("Invalid ComparisonMode '%0'") << ModeStr->str();
+  return ComparisonMode::Undefined;
 }
 
 } // namespace clang::tidy::bugprone
