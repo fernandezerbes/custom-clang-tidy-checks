@@ -45,14 +45,18 @@ void NamedDestructuringCheck::check(
 
     if (Mode == ComparisonMode::Exact && BindingName != FieldName) {
       diag(Binding->getLocation(), "Variable '%0' binds to a member '%1'")
-          << BindingName << FieldName;
+          << BindingName << FieldName
+          << FixItHint::CreateReplacement(Binding->getSourceRange(),
+                                          Field->getName());
     } else if (Mode == ComparisonMode::Fuzzy) {
       const auto score = rapidfuzz::fuzz::partial_ratio(BindingName, FieldName);
       if (score < FUZZY_SCORE_CUTOFF) {
         diag(Binding->getLocation(),
              "Variable '%0' binds to a member '%1' with a fuzz ratio %2 < %3")
             << BindingName << FieldName << std::to_string(score)
-            << std::to_string(FUZZY_SCORE_CUTOFF);
+            << std::to_string(FUZZY_SCORE_CUTOFF)
+            << FixItHint::CreateReplacement(Binding->getSourceRange(),
+                                            Field->getName());
       }
     }
   }
