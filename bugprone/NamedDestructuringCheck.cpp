@@ -7,8 +7,12 @@
 #include <llvm/ADT/StringRef.h>
 #include <llvm/Support/Error.h>
 #include <ranges>
+#include <rapidfuzz/fuzz.hpp>
+#include <string>
 
 namespace clang::tidy::bugprone {
+
+static constexpr double FUZZY_SCORE_CUTOFF = 90.0;
 
 NamedDestructuringCheck::NamedDestructuringCheck(StringRef CheckName,
                                                  ClangTidyContext *Context)
@@ -40,9 +44,16 @@ void NamedDestructuringCheck::check(
     const auto FieldName = Field->getNameAsString();
 
     if (Mode == ComparisonMode::Exact && BindingName != FieldName) {
-      diag(Binding->getLocation(),
-           "Variable '%0' binds to a member of different name '%1'")
+      diag(Binding->getLocation(), "Variable '%0' binds to a member '%1'")
           << BindingName << FieldName;
+    } else if (Mode == ComparisonMode::Fuzzy) {
+      const auto score = rapidfuzz::fuzz::partial_ratio(BindingName, FieldName);
+      if (score < FUZZY_SCORE_CUTOFF) {
+        diag(Binding->getLocation(),
+             "Variable '%0' binds to a member '%1' with a fuzz ratio %2 < %3")
+            << BindingName << FieldName << std::to_string(score)
+            << std::to_string(FUZZY_SCORE_CUTOFF);
+      }
     }
   }
 }

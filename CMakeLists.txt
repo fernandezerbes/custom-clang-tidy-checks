@@ -17,16 +17,12 @@ link_directories(${LLVM_LIBRARY_DIRS})
 
 add_library(CustomClangTidyChecks SHARED)
 
-link_libraries(CustomClangTidyChecks PRIVATE
-  clangAST
-  clangASTMatchers
-  clangBasic
-  clangLex
-  clangTidy
-  clangTidyUtils
-  clangTooling
+target_link_libraries(CustomClangTidyChecks PRIVATE
+  clang-cpp
+  rapidfuzz::rapidfuzz
 )
 
+add_subdirectory(3rdparty/RapidFuzz)
 add_subdirectory(bugprone)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
