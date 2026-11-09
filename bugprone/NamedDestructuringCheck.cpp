@@ -38,6 +38,9 @@ void NamedDestructuringCheck::check(
     return;
   }
 
+  // FIXME: sizes of bindings and fields is not necessarily the same because
+  // there can be packs in the declaration sequence.
+  // See https://en.cppreference.com/cpp/language/structured_binding.
   for (const auto &[Binding, Field] :
        std::ranges::zip_view(DecompDecl->bindings(), RecordDecl->fields())) {
     const auto BindingName = Binding->getNameAsString();
@@ -49,6 +52,7 @@ void NamedDestructuringCheck::check(
           << FixItHint::CreateReplacement(Binding->getSourceRange(),
                                           Field->getName());
     } else if (Mode == ComparisonMode::Fuzzy) {
+      // TODO: Fine tune fuzzer. Add a cutoff option if necessary.
       const auto score = rapidfuzz::fuzz::partial_ratio(BindingName, FieldName);
       if (score < FUZZY_SCORE_CUTOFF) {
         diag(Binding->getLocation(),
