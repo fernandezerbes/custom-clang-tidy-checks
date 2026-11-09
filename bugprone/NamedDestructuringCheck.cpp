@@ -12,7 +12,8 @@
 
 namespace clang::tidy::bugprone {
 
-static constexpr double FUZZY_SCORE_CUTOFF = 90.0;
+// TODO: make the cutoff a user option.
+static constexpr double FUZZY_SCORE_CUTOFF = (2. / 3) * 100;
 
 NamedDestructuringCheck::NamedDestructuringCheck(StringRef CheckName,
                                                  ClangTidyContext *Context)
@@ -51,7 +52,6 @@ void NamedDestructuringCheck::check(
           << FixItHint::CreateReplacement(Binding->getSourceRange(),
                                           Field->getName());
     } else if (Mode == ComparisonMode::Fuzzy) {
-      // TODO: Fine tune fuzzer. Add a cutoff option if necessary.
       const auto score = rapidfuzz::fuzz::partial_ratio(BindingName, FieldName);
       if (score < FUZZY_SCORE_CUTOFF) {
         diag(Binding->getLocation(),
