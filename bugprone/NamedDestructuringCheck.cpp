@@ -69,10 +69,7 @@ void NamedDestructuringCheck::storeOptions(ClangTidyOptions::OptionMap &Opts) {
 
 bool NamedDestructuringCheck::isLanguageVersionSupported(
     const LangOptions &LangOpts) const {
-  // Structured bindings were introduced in C++17
-  // https://en.cppreference.com/cpp/language/structured_binding
-  // return LangOpts.LangStd < LangStandard::Kind::lang_c17;
-  return true;
+  return LangOpts.CPlusPlus;
 }
 
 NamedDestructuringCheck::ComparisonMode
