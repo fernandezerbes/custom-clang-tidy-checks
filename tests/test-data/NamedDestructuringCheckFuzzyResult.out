@@ -1,0 +1,40 @@
+/home/federico/dev/custom-clang-tidy-checks/tests/NamedDestructuringCheckExamples.cpp:28:25: warning: Variable 'mnopqr' binds to a member 'ghijkl' with a fuzz ratio 0.000000 < 66.666667 [bugprone-named-destructuring-check]
+   28 |     const auto [abcdef, mnopqr, ghijkl] = FooStruct{};
+      |                         ^~~~~~
+      |                         ghijkl
+/home/federico/dev/custom-clang-tidy-checks/tests/NamedDestructuringCheckExamples.cpp:28:33: warning: Variable 'ghijkl' binds to a member 'mnopqr' with a fuzz ratio 0.000000 < 66.666667 [bugprone-named-destructuring-check]
+   28 |     const auto [abcdef, mnopqr, ghijkl] = FooStruct{};
+      |                                 ^~~~~~
+      |                                 mnopqr
+/home/federico/dev/custom-clang-tidy-checks/tests/NamedDestructuringCheckExamples.cpp:32:25: warning: Variable 'mnopqr' binds to a member 'ghijkl' with a fuzz ratio 0.000000 < 66.666667 [bugprone-named-destructuring-check]
+   32 |     const auto [abcdef, mnopqr, ghijkl] = FooClass{};
+      |                         ^~~~~~
+      |                         ghijkl
+/home/federico/dev/custom-clang-tidy-checks/tests/NamedDestructuringCheckExamples.cpp:32:33: warning: Variable 'ghijkl' binds to a member 'mnopqr' with a fuzz ratio 0.000000 < 66.666667 [bugprone-named-destructuring-check]
+   32 |     const auto [abcdef, mnopqr, ghijkl] = FooClass{};
+      |                                 ^~~~~~
+      |                                 mnopqr
+/home/federico/dev/custom-clang-tidy-checks/tests/NamedDestructuringCheckExamples.cpp:36:17: warning: Variable 'stuvwx' binds to a member 'abcdef' with a fuzz ratio 0.000000 < 66.666667 [bugprone-named-destructuring-check]
+   36 |     const auto [stuvwx, ghijkl, mnopqr] = FooStruct{};
+      |                 ^~~~~~
+      |                 abcdef
+/home/federico/dev/custom-clang-tidy-checks/tests/NamedDestructuringCheckExamples.cpp:40:17: warning: Variable 'stuvwx' binds to a member 'abcdef' with a fuzz ratio 0.000000 < 66.666667 [bugprone-named-destructuring-check]
+   40 |     const auto [stuvwx, ghijkl, mnopqr] = FooClass{};
+      |                 ^~~~~~
+      |                 abcdef
+/home/federico/dev/custom-clang-tidy-checks/tests/NamedDestructuringCheckExamples.cpp:53:17: warning: Variable 'azzzzz' binds to a member 'abcdef' with a fuzz ratio 28.571429 < 66.666667 [bugprone-named-destructuring-check]
+   53 |     const auto [azzzzz, ghijkl, mnopqr] = FooStruct{};
+      |                 ^~~~~~
+      |                 abcdef
+/home/federico/dev/custom-clang-tidy-checks/tests/NamedDestructuringCheckExamples.cpp:58:17: warning: Variable 'azzzzz' binds to a member 'abcdef' with a fuzz ratio 28.571429 < 66.666667 [bugprone-named-destructuring-check]
+   58 |     const auto [azzzzz, ghijkl, mnopqr] = FooClass{};
+      |                 ^~~~~~
+      |                 abcdef
+/home/federico/dev/custom-clang-tidy-checks/tests/NamedDestructuringCheckExamples.cpp:71:11: warning: Variable 'remainder' binds to a member 'quot' with a fuzz ratio 0.000000 < 66.666667 [bugprone-named-destructuring-check]
+   71 |     auto [remainder, quotient] = std::div(123456, 73);
+      |           ^~~~~~~~~
+      |           quot
+/home/federico/dev/custom-clang-tidy-checks/tests/NamedDestructuringCheckExamples.cpp:71:22: warning: Variable 'quotient' binds to a member 'rem' with a fuzz ratio 33.333333 < 66.666667 [bugprone-named-destructuring-check]
+   71 |     auto [remainder, quotient] = std::div(123456, 73);
+      |                      ^~~~~~~~
+      |                      rem
