@@ -3,6 +3,7 @@
 
 namespace clang::tidy::bugprone {
 
+// TODO: Explain what this does.
 class NamedDestructuringCheck : public clang::tidy::ClangTidyCheck {
 public:
   NamedDestructuringCheck(StringRef CheckName, ClangTidyContext *Context);
@@ -22,7 +23,7 @@ private:
 
   ComparisonMode getComparisonMode() const;
 
-  ComparisonMode Mode;
+  const ComparisonMode Mode;
 };
 
 } // namespace clang::tidy::bugprone
